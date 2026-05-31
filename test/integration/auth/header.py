@@ -48,7 +48,7 @@ def test_known_user_redirects():
 
 
 def test_frontend_info_flags():
-    print(f'TESTING: frontend/info with valid header -> can_logout=false, can_change_password=false')
+    print('TESTING: frontend/info with valid header -> can_logout=false, can_change_password=false')
     s = _session_with_user(ADMIN_USER)
     resp = s.get(f'{BASE_URL}/api/frontend/info', allow_redirects=False)
     assert resp.status_code == 200, f'Expected 200, got {resp.status_code}'
