@@ -3,6 +3,8 @@ import { writable } from 'svelte/store';
 interface backendInfos {
     authenticated: boolean,
     sso: boolean,
+    can_logout: boolean,
+    can_change_password: boolean,
     user: null|string,
     user_id: null|number,
     version: string,

@@ -36,6 +36,7 @@ AW_ENV_VARS = {
     'debug': ['AW_DEBUG'],
     'audit': ['AW_AUDIT'],
     'auth_mode': ['AW_AUTH'],
+    'remote_user_header': ['AW_REMOTE_USER_HEADER'],
     'saml_config': [ENV_KEY_SAML],
     'ansible_executor': ['AW_EXECUTOR'],
     'ansible_executor_engine': ['AW_ENGINE'],
@@ -92,3 +93,7 @@ def auth_mode_saml() -> bool:
     return get_aw_env_var_or_default('auth_mode').lower() == 'saml' and \
         ENV_KEY_SAML in environ and \
         (ENV_KEY_CONFIG in environ and environ[ENV_KEY_CONFIG] != '0')
+
+
+def auth_mode_header() -> bool:
+    return get_aw_env_var_or_default('auth_mode').lower() == 'header'

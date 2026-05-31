@@ -73,15 +73,17 @@
         <Heading tag="h2">{t('nav.user_settings')}</Heading>
 
 
-        <div class={classModalInput}>
-            <Label for="user_pwd" class={classModalLabel}>{t('user_settings.form.pwd')}</Label>
-            <Input id="user_pwd" bind:value={settings.password} type="password"
-                color={settings.password_valid ? 'base' : 'red'}/>
-            <Tooltip>{t('user_settings.form.help.pwd')}</Tooltip>
-        </div>
-        <div class={classModalBtns}>
-            <Button type="button" on:click={changePassword}><FloppyDiskSolid/></Button>
-            <Tooltip>{t('user_settings.btn.change_pwd')}</Tooltip>
-        </div>
+        {#if $share.backend.can_change_password}
+            <div class={classModalInput}>
+                <Label for="user_pwd" class={classModalLabel}>{t('user_settings.form.pwd')}</Label>
+                <Input id="user_pwd" bind:value={settings.password} type="password"
+                    color={settings.password_valid ? 'base' : 'red'}/>
+                <Tooltip>{t('user_settings.form.help.pwd')}</Tooltip>
+            </div>
+            <div class={classModalBtns}>
+                <Button type="button" on:click={changePassword}><FloppyDiskSolid/></Button>
+                <Tooltip>{t('user_settings.btn.change_pwd')}</Tooltip>
+            </div>
+        {/if}
     </div>
 </Modal>

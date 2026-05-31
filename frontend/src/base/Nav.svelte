@@ -154,15 +154,19 @@
     <Tooltip placement="bottom">{t('nav.donate')}</Tooltip>
 
     {#if $share.backend.authenticated}
-      <Button id="nav-btn-user-settings" size="xs" class="ml-1 sm:ml-2 {classBtnLink}"
-        on:click={() => {userSettingsOpen=true}}><UserSettingsSolid/></Button>
-      <Tooltip placement="bottom">{t('nav.user_settings')}</Tooltip>
+      {#if $share.backend.can_change_password}
+        <Button id="nav-btn-user-settings" size="xs" class="ml-1 sm:ml-2 {classBtnLink}"
+          on:click={() => {userSettingsOpen=true}}><UserSettingsSolid/></Button>
+        <Tooltip placement="bottom">{t('nav.user_settings')}</Tooltip>
+      {/if}
 
-      <form method="post" action="/o/">
-        <Button id="nav-btn-logout" size="xs" class="ml-1 sm:ml-2 h-full" type="submit"><LockSolid /></Button>
-        <Tooltip placement="bottom">{t('nav.logout')}</Tooltip>
-        {@html getCSRFFormTokenHTML()}
-      </form>
+      {#if $share.backend.can_logout}
+        <form method="post" action="/o/">
+          <Button id="nav-btn-logout" size="xs" class="ml-1 sm:ml-2 h-full" type="submit"><LockSolid /></Button>
+          <Tooltip placement="bottom">{t('nav.logout')}</Tooltip>
+          {@html getCSRFFormTokenHTML()}
+        </form>
+      {/if}
     {/if}
     <!--
     <NavHamburger />

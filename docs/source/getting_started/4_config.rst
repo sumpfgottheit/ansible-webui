@@ -209,11 +209,20 @@ Some settings are only available as environmental variables.
 
   Choose the authentication mode you want to use.
 
-  One of :code:`saml`, :code:`ldap` or :code:`local`. Default: :code:`local`
+  One of :code:`header`, :code:`saml`, :code:`ldap` or :code:`local`. Default: :code:`local`
 
   If the mode is set to :code:`saml` or :code:`ldap` - you need to define its config inside the config file.
 
   For non-local auth you will have to install the dependencies: :code:`oxl-ansible-webui[saml]` or :code:`oxl-ansible-webui[ldap]`
+
+
+* **AW_REMOTE_USER_HEADER**
+
+  Header key used when :code:`AW_AUTH=header` is enabled. Default: :code:`HTTP_REMOTE_USER`
+
+  A reverse proxy HTTP header named :code:`Remote-User` is exposed to Django as :code:`HTTP_REMOTE_USER`.
+
+  See: :ref:`Administration - Authentication - HTTP Header Authentication <administration_auth_header>`
 
 
 General System Settings

@@ -8,6 +8,49 @@ Authentication
 
 In case your primary authentication method is not working for some reason - you can enter the application with a local user at: :code:`/a/login/fallback`
 
+.. _administration_auth_header:
+
+HTTP Header Authentication
+##########################
+
+Ansible-WebUI can trust a username supplied by a reverse proxy in an HTTP header.
+
+This mode expects the reverse proxy to perform authentication before requests reach Ansible-WebUI. Unknown users are not created automatically; the header value must match an existing Django username.
+
+Setup
+*****
+
+1. Enable header authentication:
+
+  .. code-block:: yaml
+
+      AUTH: 'header'
+      REMOTE_USER_HEADER: 'HTTP_REMOTE_USER'
+
+  The default :code:`REMOTE_USER_HEADER` value is :code:`HTTP_REMOTE_USER`. A proxy HTTP header named :code:`Remote-User` is exposed to Django as :code:`HTTP_REMOTE_USER`.
+
+2. Create the users in advance.
+
+  For the initial administrator, set :code:`AW_ADMIN` to the same username the proxy sends in the configured header.
+
+3. Ensure Ansible-WebUI is only reachable through the trusted reverse proxy.
+
+  The proxy must remove any inbound user header before setting its own value. HAProxy example:
+
+  .. code-block:: haproxy
+
+      http-request del-header Remote-User
+      http-request set-header Remote-User %[...authenticated-user...]
+
+Logout
+******
+
+Local logout does not end the proxy-side authentication session. If the proxy continues sending the user header, Django will authenticate the user again on the next request. The WebUI therefore hides its logout button in this mode.
+
+.. note::
+
+    In header mode the default ``ModelBackend`` (local password authentication) is disabled. All login paths — including Django's :code:`/admin/` interface — require the proxy-supplied header. If direct database access is ever needed, use Django's :code:`createsuperuser` management command together with a temporary local-auth setup.
+
 .. _administration_auth_saml:
 
 SAML SSO

@@ -1,6 +1,7 @@
 from urllib.parse import urljoin
 
 from django.dispatch import receiver
+from django.conf import settings as django_settings
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 
@@ -16,6 +17,18 @@ from aw.utils.debug import log, log_error
 from aw.utils.util import get_client_ip
 from aw.dependencies import saml_installed, log_dependency_error
 from aw.utils.audit import log_audit
+
+
+@ui_endpoint_wrapper_auth
+def header_login(request) -> HttpResponse:
+    if request.user.is_authenticated:
+        return redirect(LOGIN_REDIRECT_URL)
+
+    remote_user_header = getattr(django_settings, 'REMOTE_USER_HEADER', 'HTTP_REMOTE_USER')
+    if not request.META.get(remote_user_header):
+        return HttpResponse(status=403, content=b'Remote user header missing')
+
+    return HttpResponse(status=403, content=b'User does not exist')
 
 
 # SP-initiated SAML SSO; see: https://github.com/grafana/django-saml2-auth/issues/105

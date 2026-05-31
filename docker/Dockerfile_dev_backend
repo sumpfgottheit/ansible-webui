@@ -4,6 +4,7 @@ ARG AW_VERSION=0.0
 ARG AW_USER=aw
 
 COPY --chmod=0644 requirements.txt /etc/requirements.txt
+COPY --chmod=0644 requirements_test_backend.txt /etc/requirements_test_backend.txt
 
 RUN apt-get update && \
     apt-get -y --no-install-recommends install git git-lfs openssh-client sshpass xmlsec1 && \
@@ -12,7 +13,8 @@ RUN apt-get update && \
     mkdir -p /data/log && \
     useradd --uid ${UID} --user-group --shell /usr/sbin/nologin --home-dir /home/ansible-webui --create-home ${AW_USER} && \
     chown ${AW_USER}:${AW_USER} /data/log && \
-    python3 -m pip install -r /etc/requirements.txt
+    python3 -m pip install -r /etc/requirements.txt && \
+    python3 -m pip install -r /etc/requirements_test_backend.txt
 
 ENV AW_VERSION=${AW_VERSION}.dev \
     AW_DEV=1 \
@@ -33,6 +35,7 @@ WORKDIR /repo/test
 EXPOSE 8000
 
 COPY --chmod=0755 docker/entrypoint_dev_backend.sh /entrypoint.sh
+COPY --chmod=0755 docker/entrypoint_dev_unit_tests.sh /entrypoint_unit_tests.sh
 
 USER ${AW_USER}
 ENTRYPOINT ["/entrypoint.sh"]

@@ -141,6 +141,7 @@ class APIBackendInfo(GenericAPIView):
     def get(request):
         states = {
             'authenticated': False, 'sso': False, 'user': None, 'user_id': None,
+            'can_logout': AUTH_MODE != 'header', 'can_change_password': AUTH_MODE != 'header',
             'version': get_version(),
             'logo': get_logo(),
         }

@@ -7,9 +7,9 @@ from django.contrib.auth.views import LoginView, PasswordChangeView
 from web_serve_static import urlpatterns_static
 from aw.api import urlpatterns_api
 from aw.views.main import urlpatterns_ui, catchall, logout, not_found, favicon
-from aw.config.environment import check_aw_env_var_true, auth_mode_saml
+from aw.config.environment import check_aw_env_var_true, auth_mode_saml, auth_mode_header
 from aw.utils.deployment import deployment_dev
-from aw.views.auth import saml_sp_initiated_login, saml_sp_initiated_login_init
+from aw.views.auth import header_login, saml_sp_initiated_login, saml_sp_initiated_login_init
 from aw.settings import STATIC_URL
 
 urlpatterns = []
@@ -20,7 +20,12 @@ if deployment_dev() or check_aw_env_var_true(var='serve_static', fallback=True):
 urlpatterns += urlpatterns_api
 
 # AUTH
-if auth_mode_saml():
+if auth_mode_header():
+    urlpatterns += [
+        path('a/login/', header_login, name='login'),
+    ]
+
+elif auth_mode_saml():
     urlpatterns += [
         path('a/saml/init/', saml_sp_initiated_login_init),
         path('a/saml/', include('django_saml2_auth.urls')),

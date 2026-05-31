@@ -64,6 +64,7 @@ CONFIG_DEFAULTS = {
     'ssl_file_key': None,
     'ssl_file_crt': None,
     'auth_mode': 'local',
+    'remote_user_header': 'HTTP_REMOTE_USER',
     'saml_config': None,
     'jwt_algo': 'HS256',
     'jwt_secret': ''.join(random_choice(ascii_letters + digits + punctuation) for _ in range(30)),

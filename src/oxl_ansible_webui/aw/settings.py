@@ -17,7 +17,7 @@ except ImportError:
 from aw.config.hardcoded import LOGIN_PATH, ENV_KEY_CONFIG, ENV_KEY_SAML
 from aw.config.defaults import CONFIG_DEFAULTS, inside_docker, behind_proxy
 from aw.utils.deployment import deployment_dev, deployment_prod
-from aw.config.environment import get_aw_env_var_or_default, auth_mode_saml, get_aw_env_var
+from aw.config.environment import get_aw_env_var_or_default, auth_mode_saml, auth_mode_header, get_aw_env_var
 from aw.utils.debug import log
 from aw.dependencies import saml_installed, mysql_installed, psql_installed, log_dependency_error
 from aw.utils.db import AbstractDBConnection, SQLiteOperationalError, MySQLError, PSQLError
@@ -69,6 +69,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'aw.apps.AwMiddleware',
 ]
+
+if auth_mode_header():
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1,
+        'aw.auth.AwRemoteUserMiddleware',
+    )
+    # ModelBackend is intentionally omitted: in header mode all authentication is
+    # delegated to the reverse proxy; local password-based login is disabled.
+    AUTHENTICATION_BACKENDS = ['aw.auth.AwRemoteUserBackend']
+    REMOTE_USER_HEADER = get_aw_env_var_or_default('remote_user_header')
 
 # Database
 DB_FILE = None
